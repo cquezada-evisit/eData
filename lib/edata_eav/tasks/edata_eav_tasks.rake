@@ -14,6 +14,15 @@ namespace :edata_eav do
     end
   end
 
+  desc "Drop the database"
+  task :drop_db do
+    config = EdataEav.configuration.database_configuration
+    ActiveRecord::Base.establish_connection(config)
+    puts "Dropping database #{config['database']}..."
+    ActiveRecord::Base.connection.drop_database(config['database'])
+    puts "Database #{config['database']} dropped"
+  end
+
   desc "Run migrations if there are any pending"
   task :migrate do
     ActiveRecord::Base.establish_connection(EdataEav.configuration.database_configuration)

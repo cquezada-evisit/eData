@@ -2,19 +2,19 @@ default: &default
   adapter: mysql2
   encoding: utf8
   pool: 5
-  username: <%= ENV['DB_USERNAME'] %>
-  password: <%= ENV['DB_PASSWORD'] %>
-  host: <%= ENV['DB_HOST'] %>
-  port: <%= ENV['DB_PORT'] %>
+  username: <%= ENV['EDATA_DB_USERNAME'] %>
+  password: <%= ENV['EDATA_DB_PASSWORD'] %>
+  host: <%= ENV['EDATA_DB_HOST'] %>
+  port: <%= ENV['EDATA_DB_PORT'] %>
 
 development:
   <<: *default
-  database: <%= ENV['DB_DEVELOPMENT_DATABASE'] %>
+  database: <%= ENV['EDATA_DB_DEVELOPMENT_DATABASE'] %>
 
 test:
   <<: *default
-  database: <%= ENV['DB_TEST_DATABASE'] %>
+  database: <%= ENV['EDATA_DB_TEST_DATABASE'] %>
 
 production:
   <<: *default
-  database: <%= ENV['DB_PRODUCTION_DATABASE'] %>
+  database: <%= ENV['EDATA_DB_PRODUCTION_DATABASE'] %>
