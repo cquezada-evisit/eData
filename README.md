@@ -1,36 +1,69 @@
-# EdataEav
+# EdataEav Gem
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/edata_eav`. To experiment with that code, run `bin/console` for an interactive prompt.
+This gem provides a way to migrate NoSQL documents to a SQL-based EAV (Entity-Attribute-Value) model. The gem includes services for migrating documents and building JSON structures from the EAV model.
 
-TODO: Delete this and the text above, and describe your gem
+## Environment Variables
 
-## Installation
+Make sure to set the following environment variables: (.env file)
+Note: Consider using a remote database such as a Google Cloud SQL instance
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'edata_eav'
+```sh
+EDATA_DB_ADAPTER=mysql2
+EDATA_DB_ENCODING=utf8
+EDATA_DB_POOL=5
+EDATA_DB_USERNAME=root
+EDATA_DB_PASSWORD=your_password
+EDATA_DB_HOST=your_secret_key
+EDATA_DB_PORT=3306
+EDATA_DB_DEVELOPMENT_DATABASE=edata_development
+EDATA_DB_TEST_DATABASE=edata_test
+EDATA_DB_PRODUCTION_DATABASE=edata_production
 ```
 
-And then execute:
+## Docker Setup
 
-    $ bundle install
+### Building the Docker Container
 
-Or install it yourself as:
+To build the Docker container, run the following command:
 
-    $ gem install edata_eav
+```sh
+docker-compose build
+```
 
-## Usage
+### Running the Docker Container
 
-TODO: Write usage instructions here
+To start the Docker container, use the following command:
 
-## Development
+```sh
+docker-compose up
+```
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+## Database Setup
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+### Creating and Migrating the Database
 
-## Contributing
+You need to run rake tasks to create and migrate the database. Ensure that you have set the environment variables correctly.
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/edata_eav.
+#### Creating the Database
 
+Run the following rake task to create the database:
+
+```sh
+docker-compose run edata_eav bundle exec rake edata_eav:create_db
+```
+
+#### Migrating the Database
+
+Run the following rake task to migrate the database:
+
+```sh
+docker-compose run edata_eav bundle exec rake edata_eav:migrate_db
+```
+
+## Running Tests
+
+To run the tests, use the following command:
+
+```sh
+docker-compose run edata_eav bundle exec rspec
+```
