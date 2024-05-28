@@ -6,10 +6,12 @@ class CreateEdataDefinition < ActiveRecord::Migration[5.0]
       t.string :data_type
       t.string :label
       t.string :parent_id, limit: 36, index: true
+      t.string :edata_pack_id, limit: 36, index: true
 
       t.timestamps
     end
 
     add_foreign_key :edata_definitions, :edata_definitions, column: :parent_id
+    add_foreign_key :edata_definitions, :edata_packs, column: :edata_pack_id
   end
 end

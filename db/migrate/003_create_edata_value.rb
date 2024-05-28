@@ -15,7 +15,10 @@ class CreateEdataValue < ActiveRecord::Migration[5.0]
 
       t.timestamps
     end
-    add_foreign_key :edata_values, :edata_packs
-    add_foreign_key :edata_values, :edata_definitions
+
+    add_index :edata_values, :edata_pack_id
+    add_index :edata_values, :edata_definition_id
+    add_foreign_key :edata_values, :edata_packs, column: :edata_pack_id
+    add_foreign_key :edata_values, :edata_definitions, column: :edata_definition_id
   end
 end

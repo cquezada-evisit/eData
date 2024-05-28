@@ -14,7 +14,7 @@ module EdataEav
 
     def migrate
       ActiveRecord::Base.transaction do
-        edata_pack = create_edata_pack
+        edata_pack = EdataEav::EdataPack.create!
         process_section(@document, edata_pack)
         @migration_status.update!(document: @document, migrated: true)
       end
@@ -24,13 +24,10 @@ module EdataEav
 
     private
 
-    def create_edata_pack
-      EdataEav::EdataPack.create!(created: Time.now)
-    end
-
     def process_section(section, edata_pack, parent_definition = nil)
       section.each do |key, value|
-        edata_definition = find_or_create_definition(key, parent_definition)
+        edata_definition = find_or_create_definition(key, parent_definition, edata_pack)
+        EdataEav.logger.info "Processing EdataDefinition #{edata_definition.id}, Root #{edata_definition.parent}"
 
         if value.is_a?(Hash)
           process_section(value, edata_pack, edata_definition)
@@ -48,18 +45,17 @@ module EdataEav
       end
     end
 
-    def find_or_create_definition(name, parent_definition)
-      EdataEav::EdataDefinition.find_or_create_by!(name: name.to_s, parent: parent_definition) do |definition|
-        definition.created = Time.now
-      end
+    def find_or_create_definition(name, parent_definition, edata_pack)
+      EdataEav::EdataDefinition.find_or_create_by!(name: name.to_s, parent: parent_definition, edata_pack: edata_pack)
     end
 
     def create_value_record(edata_pack, edata_definition, value)
+      EdataEav.logger.info "Creating EdataValue for pack #{edata_pack.as_json}"
+
       EdataEav::EdataValue.create!(
         edata_pack: edata_pack,
         edata_definition: edata_definition,
-        created: Time.now,
-        value: value.is_a?(String) ? value : nil,
+        value: value,
         value_text: value.is_a?(String) ? value : nil,
         value_datetime: parse_datetime(value),
         value_json: value.is_a?(Hash) ? value : nil

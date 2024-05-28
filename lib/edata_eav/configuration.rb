@@ -14,6 +14,7 @@ module EdataEav
       database_yml = File.join(__dir__, '..', '..', 'config', 'database.yml')
       erb = ERB.new(File.read(database_yml)).result
       config = YAML.safe_load(erb, aliases: true)[env]
+      EdataEav.logger.info "DB Config: #{config.as_json}"
       self.database_configuration = config
     end
 
