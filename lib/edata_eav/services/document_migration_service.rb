@@ -14,10 +14,12 @@ module EdataEav
 
     def migrate
       ActiveRecord::Base.transaction do
-        edata_pack = EdataEav::EdataPack.create!
-        process_section(@document, edata_pack)
+        @edata_pack = EdataEav::EdataPack.create!
+        process_section(@document, @edata_pack)
         @migration_status.update!(document: @document, migrated: true)
       end
+
+      @edata_pack.id
     rescue StandardError => e
       raise MigrationError, "Migration failed: #{e.message}"
     end
@@ -27,7 +29,7 @@ module EdataEav
     def process_section(section, edata_pack, parent_definition = nil)
       section.each do |key, value|
         edata_definition = find_or_create_definition(key, parent_definition, edata_pack)
-        EdataEav.logger.info "Processing EdataDefinition #{edata_definition.id}, Root #{edata_definition.parent}"
+        EdataEav.logger.info "Processing EdataDefinition #{edata_definition.id}, Root? #{edata_definition.parent.present?}"
 
         if value.is_a?(Hash)
           process_section(value, edata_pack, edata_definition)
@@ -50,8 +52,6 @@ module EdataEav
     end
 
     def create_value_record(edata_pack, edata_definition, value)
-      EdataEav.logger.info "Creating EdataValue for pack #{edata_pack.as_json}"
-
       EdataEav::EdataValue.create!(
         edata_pack: edata_pack,
         edata_definition: edata_definition,

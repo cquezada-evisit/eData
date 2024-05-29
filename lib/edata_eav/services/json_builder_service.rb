@@ -1,3 +1,5 @@
+require 'oj'
+
 module EdataEav
   class JsonBuilderService
     def initialize(edata_pack_id)
@@ -6,6 +8,8 @@ module EdataEav
     end
 
     def build_json
+      EdataEav.logger.info "Building EdataPack #{@edata_pack.id} JSON structure from SQL..."
+
       result = {}
       root_definitions = @edata_pack.edata_definitions.where(parent_id: nil)
       process_definitions(root_definitions, result)
