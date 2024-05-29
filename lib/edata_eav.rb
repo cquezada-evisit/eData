@@ -1,4 +1,3 @@
-require 'active_model_serializers'
 require 'active_record'
 require 'logger'
 require 'dotenv'
@@ -42,9 +41,9 @@ require_relative 'edata_eav/edata_value'
 require_relative 'edata_eav/edata_migration_status'
 
 # Serializers
-require_relative 'edata_eav/serializers/edata_pack_serializer'
-require_relative 'edata_eav/serializers/edata_value_serializer'
-require_relative 'edata_eav/serializers/edata_definition_serializer'
+# require_relative 'edata_eav/serializers/edata_pack_serializer'
+# require_relative 'edata_eav/serializers/edata_value_serializer'
+# require_relative 'edata_eav/serializers/edata_definition_serializer'
 
 # Utils
 require_relative 'edata_eav/railtie' if defined?(Rails)

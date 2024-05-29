@@ -1,17 +1,40 @@
 version: "3.8"
 
 services:
+  edata_db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${EDATA_DB_PASSWORD}
+      MYSQL_DATABASE: ${EDATA_DB_DEVELOPMENT_DATABASE}
+    ports:
+      - "3307:3306"
+    volumes:
+      - edata_db_data:/var/lib/mysql
+
   edata_eav:
     build: .
     env_file:
       - .env
     environment:
       RACK_ENV: development
+      DB_ADAPTER: ${EDATA_DB_ADAPTER}
+      DB_ENCODING: ${EDATA_DB_ENCODING}
+      DB_POOL: ${EDATA_DB_POOL}
+      DB_USERNAME: ${EDATA_DB_USERNAME}
+      DB_PASSWORD: ${EDATA_DB_PASSWORD}
+      DB_HOST: edata_db
+      DB_PORT: ${EDATA_DB_PORT}
+      DB_DEVELOPMENT_DATABASE: ${EDATA_DB_DEVELOPMENT_DATABASE}
+      DB_TEST_DATABASE: ${EDATA_DB_TEST_DATABASE}
+      DB_PRODUCTION_DATABASE: ${EDATA_DB_PRODUCTION_DATABASE}
     volumes:
       - .:/app
       - bundle:/usr/local/bundle
     ports:
       - "3000:3000"
+    depends_on:
+      - edata_db
 
 volumes:
   bundle:
+  edata_db_data:

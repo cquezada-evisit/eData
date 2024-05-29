@@ -14,13 +14,18 @@ namespace :edata_eav do
     end
   end
 
-  desc "Drop the database"
+  desc "Drop the database if it exists"
   task :drop_db do
     config = EdataEav.configuration.database_configuration
-    ActiveRecord::Base.establish_connection(config)
-    puts "Dropping database #{config['database']}..."
-    ActiveRecord::Base.connection.drop_database(config['database'])
-    puts "Database #{config['database']} dropped"
+    ActiveRecord::Base.establish_connection(config.merge('database' => nil))
+    existing_databases = ActiveRecord::Base.connection.execute("SHOW DATABASES LIKE '#{config['database']}'").to_a
+    if existing_databases.any?
+      puts "Dropping database #{config['database']}..."
+      ActiveRecord::Base.connection.drop_database(config['database'])
+      puts "Database #{config['database']} dropped"
+    else
+      puts "Database #{config['database']} does not exist"
+    end
   end
 
   desc "Run migrations if there are any pending"
@@ -37,5 +42,5 @@ namespace :edata_eav do
   end
 
   desc "Setup the database"
-  task setup: [:create_db, :migrate]
+  task setup: [:drop_db, :create_db, :migrate]
 end

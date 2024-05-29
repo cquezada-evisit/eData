@@ -28,7 +28,7 @@ module EdataEav
 
     def process_section(section, edata_pack, parent_definition = nil)
       section.each do |key, value|
-        edata_definition = find_or_create_definition(key, parent_definition, edata_pack)
+        edata_definition = find_or_create_definition(key, parent_definition, value)
         EdataEav.logger.info "Processing EdataDefinition #{edata_definition.id}, Root? #{edata_definition.parent.present?}"
 
         if value.is_a?(Hash)
@@ -47,8 +47,13 @@ module EdataEav
       end
     end
 
-    def find_or_create_definition(name, parent_definition, edata_pack)
-      EdataEav::EdataDefinition.find_or_create_by!(name: name.to_s, parent: parent_definition, edata_pack: edata_pack)
+    def find_or_create_definition(name, parent_definition, value)
+      EdataEav::EdataDefinition.find_or_create_by!(
+        name: name.to_s,
+        data_type: value.class,
+        parent: parent_definition,
+        edata_pack: @edata_pack
+      )
     end
 
     def create_value_record(edata_pack, edata_definition, value)

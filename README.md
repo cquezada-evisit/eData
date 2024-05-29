@@ -5,7 +5,6 @@ This gem provides a way to migrate NoSQL documents to a SQL-based EAV (Entity-At
 ## Environment Variables
 
 Make sure to set the following environment variables: (.env file)
-Note: Consider using a remote database such as a Google Cloud SQL instance
 
 ```sh
 EDATA_DB_ADAPTER=mysql2
@@ -35,7 +34,7 @@ docker-compose build
 To start the Docker container, use the following command:
 
 ```sh
-docker-compose up
+docker-compose up -d
 ```
 
 ## Database Setup
@@ -44,20 +43,12 @@ docker-compose up
 
 You need to run rake tasks to create and migrate the database. Ensure that you have set the environment variables correctly.
 
-#### Creating the Database
+#### Setup Database
 
-Run the following rake task to create the database:
-
-```sh
-docker-compose run edata_eav bundle exec rake edata_eav:create_db
-```
-
-#### Migrating the Database
-
-Run the following rake task to migrate the database:
+Run the following rake task to create and migrate the database:
 
 ```sh
-docker-compose run edata_eav bundle exec rake edata_eav:migrate_db
+docker-compose run edata_eav bundle exec rake edata_eav:setup
 ```
 
 ## Running Tests

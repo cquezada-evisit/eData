@@ -179,6 +179,7 @@ DEPENDENCIES
   edata_eav!
   factory_bot_rails
   mysql2 (>= 0.3.18)
+  nokogiri (>= 1.12.0)
   oj
   pry
   rails (~> 5.0)
