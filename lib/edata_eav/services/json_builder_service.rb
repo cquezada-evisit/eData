@@ -11,20 +11,22 @@ module EdataEav
       EdataEav.logger.info "Building EdataPack #{@edata_pack.id} JSON structure from SQL..."
 
       result = {}
-      root_definitions = @edata_pack.edata_definitions.where(parent_id: nil)
-      process_definitions(root_definitions, result)
-      result
+      root_config_items = EdataEav::EdataConfigItem.joins(:edata_definition)
+                             .where(edata_definitions: { edata_pack_id: @edata_pack.id }, parent_edata_config_item_id: nil)
+      process_config_items(root_config_items, result)
+      Oj.dump(result, mode: :compat) # Using Oj to generate JSON string for the result
     end
 
     private
 
-    def process_definitions(definitions, result)
-      definitions.each do |definition|
-        children = definition.children
+    def process_config_items(config_items, result)
+      config_items.each do |config_item|
+        definition = config_item.edata_definition
+        children = config_item.children
 
         if children.any?
           result[definition.name] = {}
-          process_definitions(children, result[definition.name])
+          process_config_items(children, result[definition.name])
         else
           values = definition.edata_values.where(edata_pack: @edata_pack)
           if values.size == 1
