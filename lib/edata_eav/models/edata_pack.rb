@@ -12,5 +12,7 @@ module EdataEav
               class_name: 'EdataEav::EdataValue',
               foreign_key: 'edata_pack_id',
               dependent: :destroy
+
+    accepts_nested_attributes_for :edata_definitions, allow_destroy: true
   end
 end

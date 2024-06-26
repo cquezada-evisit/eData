@@ -3,9 +3,8 @@ require 'logger'
 require 'dotenv'
 Dotenv.load
 
-# DB
+# Load configuration and logger setup
 require_relative 'edata_eav/configuration'
-require_relative 'edata_eav/concerns/health_recordable'
 require_relative 'edata_eav/concerns/uuid_generator'
 
 module EdataEav
@@ -33,20 +32,15 @@ module EdataEav
   configure_logger
 end
 
-# Models
-require_relative 'edata_eav/base'
-require_relative 'edata_eav/edata_pack'
-require_relative 'edata_eav/edata_definition'
-require_relative 'edata_eav/edata_value'
-require_relative 'edata_eav/edata_migration_status'
+# Load all models dynamically from 'edata_eav/models' directory
+Dir[File.join(__dir__, 'edata_eav/models', '*.rb')].each { |file| require file }
 
-# Serializers
-# require_relative 'edata_eav/serializers/edata_pack_serializer'
-# require_relative 'edata_eav/serializers/edata_value_serializer'
-# require_relative 'edata_eav/serializers/edata_definition_serializer'
+# Serializers - Uncomment and modify as needed
+# Dir[File.join(__dir__, 'edata_eav/serializers', '*.rb')].each { |file| require file }
 
-# Utils
+# Rails-specific utilities
 require_relative 'edata_eav/railtie' if defined?(Rails)
 require_relative 'tasks' if defined?(Rake)
 
+# Establish database connection
 EdataEav.establish_connection
